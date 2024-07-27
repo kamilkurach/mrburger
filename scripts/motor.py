@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 from time import sleep
+import threading
 
 GPIO.setmode(GPIO.BCM)
 #GPIO25 PWMA
@@ -15,8 +16,32 @@ GPIO.output(16, GPIO.HIGH)
 GPIO.setup(23, GPIO.IN)
 GPIO.setup(24, GPIO.IN)
 
+#set gpio25 to 50Hz
 pwm = GPIO.PWM(25, 50)
 pwm.start(0)
+
+#set global vars initial values
+PREV_TICK = GPIO.input(23)
+TOTAL_TICKS = 0
+
+def calc_distance(tick_count):
+  #returned distance in mm
+  #wheel circumference 67 mm 
+  tick_per_revolution = 40
+  distance = 67 * tick_count/tick_per_revolution
+  return distance
+
+def count_ticks(gpio):
+  global TOTAL_TICKS
+  global PREV_TICK
+  while True:
+    left_encoder = GPIO.input(gpio)
+    if left_encoder == 1 and PREV_TICK == 0:
+      TOTAL_TICKS += 1
+    elif left_encoder == 0 and PREV_TICK == 1:
+       TOTAL_TICKS += 1
+    PREV_TICK = left_encoder
+  #print("TT: ",TOTAL_TICKS,"PT: ",PREV_TICK)
 
 def print_sensor_data():
   left_encoder = GPIO.input(23)
@@ -26,15 +51,21 @@ def print_sensor_data():
 #pwm.ChangeDutyCycle(35)
 #sleep(5)
 
+#count ticks from sensor in separate thread
+gpio = 23
+t = threading.Thread(target=count_ticks, args=(gpio,))
+t.start()
+
 while True:
   for dc in range(0, 101, 3):
-    print_sensor_data()
+    #print_sensor_data()
     pwm.ChangeDutyCycle(dc)
     sleep(0.1)
+    print(calc_distance(TOTAL_TICKS))
   for dc in range(100, -1, -3):
-    print_sensor_data()
+    #print_sensor_data()
     pwm.ChangeDutyCycle(dc)
     sleep(0.1)
-
+    print(calc_distance(TOTAL_TICKS))
 pwm.stop()
 GPIO.cleanup()
