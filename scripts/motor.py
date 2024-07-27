@@ -7,6 +7,8 @@ GPIO.setmode(GPIO.BCM)
 
 #GPIO25 PWMA
 GPIO.setup(25, GPIO.OUT)
+#GPIO21 PWMB
+GPIO.setup(21, GPIO.OUT)
 
 #GPIO12 AIN2
 GPIO.setup(12, GPIO.OUT)
@@ -16,13 +18,24 @@ GPIO.output(12, GPIO.LOW)
 GPIO.setup(16, GPIO.OUT)
 GPIO.output(16, GPIO.HIGH)
 
+#GPIO26 BIN1
+GPIO.setup(26, GPIO.OUT)
+GPIO.output(26, GPIO.LOW)
+
+#GPIO19 BIN2
+GPIO.setup(19, GPIO.OUT)
+GPIO.output(26, GPIO.HIGH)
+
 #sensors
 GPIO.setup(23, GPIO.IN)
 GPIO.setup(24, GPIO.IN)
 
 #set gpio25 to 50Hz
-pwm = GPIO.PWM(25, 50)
-pwm.start(0)
+pwm_a = GPIO.PWM(25, 50)
+pwm_b = GPIO.PWM(21, 50)
+
+pwm_a.start(0)
+pwm_b.start(0)
 
 #set global vars initial values
 PREV_TICK = GPIO.input(23)
@@ -65,20 +78,25 @@ while True:
   for dc in range(0, 101, 3):
     #print_sensor_data()
     if calc_distance(TOTAL_TICKS) > TARGET:
-      pwm.stop()
+      pwm_a.stop()
+      pwm_b.stop()
       break
-    pwm.ChangeDutyCycle(dc)
+    pwm_a.ChangeDutyCycle(dc)
+    pwm_b.ChangeDutyCycle(dc)
     print(calc_distance(TOTAL_TICKS))
     sleep(0.1)
   for dc in range(100, -1, -3):
     #print_sensor_data()
     if calc_distance(TOTAL_TICKS) > TARGET:
-      pwm.stop()
+      pwm_a.stop()
+      pwm_b.stop()
       break
-    pwm.ChangeDutyCycle(dc)
+    pwm_a.ChangeDutyCycle(dc)
+    pwm_b.ChangeDutyCycle(dc)
     print(calc_distance(TOTAL_TICKS))
     sleep(0.1)
 
-pwm.stop()
+pwm_a.stop()
+pwm_b.stop()
 GPIO.cleanup()
 
