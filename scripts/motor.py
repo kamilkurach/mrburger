@@ -10,21 +10,67 @@ GPIO.setup(25, GPIO.OUT)
 #GPIO21 PWMB
 GPIO.setup(21, GPIO.OUT)
 
-#GPIO12 AIN2
-GPIO.setup(12, GPIO.OUT)
-GPIO.output(12, GPIO.LOW)
+try:
+  if sys.argv[2] == "-forward":
+    print("init forward")
 
-#GPIO16 AIN1
-GPIO.setup(16, GPIO.OUT)
-GPIO.output(16, GPIO.HIGH)
+    #GPIO12 AIN2
+    GPIO.setup(12, GPIO.OUT)
+    GPIO.output(12, GPIO.LOW)
 
-#GPIO26 BIN1
-GPIO.setup(26, GPIO.OUT)
-GPIO.output(26, GPIO.LOW)
+    #GPIO16 AIN1
+    GPIO.setup(16, GPIO.OUT)
+    GPIO.output(16, GPIO.HIGH)
 
-#GPIO19 BIN2
-GPIO.setup(19, GPIO.OUT)
-GPIO.output(26, GPIO.HIGH)
+    #GPIO26 BIN1
+    GPIO.setup(26, GPIO.OUT)
+    GPIO.output(26, GPIO.HIGH)
+
+    #GPIO19 BIN2
+    GPIO.setup(19, GPIO.OUT)
+    GPIO.output(19, GPIO.LOW)
+
+  elif sys.argv[2] == "-backwards":
+    print("init backwords")
+
+    #GPIO12 AIN2
+    GPIO.setup(12, GPIO.OUT)
+    GPIO.output(12, GPIO.HIGH)
+
+    #GPIO16 AIN1
+    GPIO.setup(16, GPIO.OUT)
+    GPIO.output(16, GPIO.LOW)
+
+    #GPIO26 BIN1
+    GPIO.setup(26, GPIO.OUT)
+    GPIO.output(26, GPIO.LOW)
+
+    #GPIO19 BIN2
+    GPIO.setup(19, GPIO.OUT)
+    GPIO.output(19, GPIO.HIGH)
+
+  elif sys.argv[2] == "-turn":
+
+    print("init turn")
+    #GPIO12 AIN2
+    GPIO.setup(12, GPIO.OUT)
+    GPIO.output(12, GPIO.LOW)
+
+    #GPIO16 AIN1
+    GPIO.setup(16, GPIO.OUT)
+    GPIO.output(16, GPIO.HIGH)
+
+    #GPIO26 BIN1
+    GPIO.setup(26, GPIO.OUT)
+    GPIO.output(26, GPIO.LOW)
+
+    #GPIO19 BIN2
+    GPIO.setup(19, GPIO.OUT)
+    GPIO.output(19, GPIO.HIGH)
+
+except IndexError as e:
+    print("Missing param: -forwad -backwards -turn")
+    sys.exit(0)
 
 #sensors
 GPIO.setup(23, GPIO.IN)
@@ -40,6 +86,7 @@ pwm_b.start(0)
 #set global vars initial values
 PREV_TICK = GPIO.input(23)
 TOTAL_TICKS = 0
+TARGET_REACHED = False
 
 #target distance in mm
 TARGET = int(sys.argv[1])
@@ -55,6 +102,7 @@ def calc_distance(tick_count):
 def count_ticks(gpio):
   global TOTAL_TICKS
   global PREV_TICK
+  global TARGET_REACHED
   while True:
     left_encoder = GPIO.input(gpio)
     if left_encoder == 1 and PREV_TICK == 0:
@@ -74,12 +122,14 @@ gpio = 23
 t = threading.Thread(target=count_ticks, args=(gpio,))
 t.start()
 
-while True:
+while t.is_alive() and TARGET_REACHED is False:
+
   for dc in range(0, 101, 3):
     #print_sensor_data()
     if calc_distance(TOTAL_TICKS) > TARGET:
       pwm_a.stop()
       pwm_b.stop()
+      TARGET_REACHED = True
       break
     pwm_a.ChangeDutyCycle(dc)
     pwm_b.ChangeDutyCycle(dc)
@@ -90,13 +140,15 @@ while True:
     if calc_distance(TOTAL_TICKS) > TARGET:
       pwm_a.stop()
       pwm_b.stop()
+      TARGET_REACHED = True
       break
     pwm_a.ChangeDutyCycle(dc)
     pwm_b.ChangeDutyCycle(dc)
     print(calc_distance(TOTAL_TICKS))
     sleep(0.1)
 
-pwm_a.stop()
-pwm_b.stop()
-GPIO.cleanup()
-
+print("exit")
+t.join(timeout=2)
+if t.is_alive():
+  GPIO.cleanup()
+  sys.exit()
