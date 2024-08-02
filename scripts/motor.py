@@ -5,22 +5,26 @@ import sys
 
 GPIO.setmode(GPIO.BCM)
 
-#GPIO25 PWMA
-GPIO.setup(25, GPIO.OUT)
-#GPIO21 PWMB
-GPIO.setup(21, GPIO.OUT)
+#GPIO12 PWMA
+GPIO.setup(12, GPIO.OUT)
+#GPIO13 PWMB
+GPIO.setup(13, GPIO.OUT)
+
+#GPIO4 STBY
+GPIO.setup(4, GPIO.OUT)
+GPIO.output(4, GPIO.HIGH)
 
 try:
   if sys.argv[2] == "-forward":
     print("init forward")
 
-    #GPIO12 AIN2
-    GPIO.setup(12, GPIO.OUT)
-    GPIO.output(12, GPIO.LOW)
+    #GPIO6 AIN2
+    GPIO.setup(6, GPIO.OUT)
+    GPIO.output(6, GPIO.LOW)
 
-    #GPIO16 AIN1
-    GPIO.setup(16, GPIO.OUT)
-    GPIO.output(16, GPIO.HIGH)
+    #GPIO5 AIN1
+    GPIO.setup(5, GPIO.OUT)
+    GPIO.output(5, GPIO.HIGH)
 
     #GPIO26 BIN1
     GPIO.setup(26, GPIO.OUT)
@@ -33,13 +37,13 @@ try:
   elif sys.argv[2] == "-backwards":
     print("init backwords")
 
-    #GPIO12 AIN2
-    GPIO.setup(12, GPIO.OUT)
-    GPIO.output(12, GPIO.HIGH)
+    #GPIO6 AIN2
+    GPIO.setup(6, GPIO.OUT)
+    GPIO.output(6, GPIO.HIGH)
 
-    #GPIO16 AIN1
-    GPIO.setup(16, GPIO.OUT)
-    GPIO.output(16, GPIO.LOW)
+    #GPIO5 AIN1
+    GPIO.setup(5, GPIO.OUT)
+    GPIO.output(5, GPIO.LOW)
 
     #GPIO26 BIN1
     GPIO.setup(26, GPIO.OUT)
@@ -52,13 +56,13 @@ try:
   elif sys.argv[2] == "-turn":
 
     print("init turn")
-    #GPIO12 AIN2
-    GPIO.setup(12, GPIO.OUT)
-    GPIO.output(12, GPIO.LOW)
+    #GPIO6 AIN2
+    GPIO.setup(6, GPIO.OUT)
+    GPIO.output(6, GPIO.LOW)
 
-    #GPIO16 AIN1
-    GPIO.setup(16, GPIO.OUT)
-    GPIO.output(16, GPIO.HIGH)
+    #GPIO5 AIN1
+    GPIO.setup(5, GPIO.OUT)
+    GPIO.output(5, GPIO.HIGH)
 
     #GPIO26 BIN1
     GPIO.setup(26, GPIO.OUT)
@@ -77,8 +81,8 @@ GPIO.setup(23, GPIO.IN)
 GPIO.setup(24, GPIO.IN)
 
 #set gpio25 to 50Hz
-pwm_a = GPIO.PWM(25, 50)
-pwm_b = GPIO.PWM(21, 50)
+pwm_a = GPIO.PWM(12, 50)
+pwm_b = GPIO.PWM(13, 50)
 
 pwm_a.start(0)
 pwm_b.start(0)
