@@ -77,9 +77,9 @@ except IndexError as e:
     sys.exit(0)
 
 #left sensor
-GPIO.setup(3, GPIO.IN)
+GPIO.setup(22, GPIO.IN)
 #right sensor
-GPIO.setup(2, GPIO.IN)
+GPIO.setup(27, GPIO.IN)
 
 #set gpio25 to 50Hz
 pwm_a = GPIO.PWM(12, 50)
@@ -89,7 +89,7 @@ pwm_a.start(0)
 pwm_b.start(0)
 
 #set global vars initial values
-PREV_TICK = GPIO.input(2)
+PREV_TICK = GPIO.input(22)
 TOTAL_TICKS = 0
 TARGET_REACHED = False
 
@@ -118,12 +118,12 @@ def count_ticks(gpio):
   #print("TT: ",TOTAL_TICKS,"PT: ",PREV_TICK)
 
 def print_sensor_data():
-  left_encoder = GPIO.input(2)
-  right_encoder = GPIO.input(3)
+  left_encoder = GPIO.input(22)
+  right_encoder = GPIO.input(27)
   print("L: ", left_encoder, "R: ", right_encoder)
 
 #count ticks from sensor in separate thread
-gpio = 2
+gpio = 22
 t = threading.Thread(target=count_ticks, args=(gpio,))
 t.start()
 
