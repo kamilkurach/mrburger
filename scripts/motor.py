@@ -76,9 +76,10 @@ except IndexError as e:
     print("Missing param: -forwad -backwards -turn")
     sys.exit(0)
 
-#sensors
-GPIO.setup(23, GPIO.IN)
-GPIO.setup(24, GPIO.IN)
+#left sensor
+GPIO.setup(3, GPIO.IN)
+#right sensor
+GPIO.setup(2, GPIO.IN)
 
 #set gpio25 to 50Hz
 pwm_a = GPIO.PWM(12, 50)
@@ -88,7 +89,7 @@ pwm_a.start(0)
 pwm_b.start(0)
 
 #set global vars initial values
-PREV_TICK = GPIO.input(23)
+PREV_TICK = GPIO.input(2)
 TOTAL_TICKS = 0
 TARGET_REACHED = False
 
@@ -117,12 +118,12 @@ def count_ticks(gpio):
   #print("TT: ",TOTAL_TICKS,"PT: ",PREV_TICK)
 
 def print_sensor_data():
-  left_encoder = GPIO.input(23)
-  right_encoder = GPIO.input(24)
+  left_encoder = GPIO.input(2)
+  right_encoder = GPIO.input(3)
   print("L: ", left_encoder, "R: ", right_encoder)
 
 #count ticks from sensor in separate thread
-gpio = 23
+gpio = 2
 t = threading.Thread(target=count_ticks, args=(gpio,))
 t.start()
 
