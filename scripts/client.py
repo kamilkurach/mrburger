@@ -26,3 +26,12 @@ while True:
     s_encode = s.encode()
     socket.send(s_encode)
     print('\n')
+  elif keyboard.read_key() == 'q':
+    s = 'q'
+    s_encode = s.encode()
+    socket.send(s_encode)
+    print('\n')
+  elif keyboard.read_key() == 'c':
+    print('\n')
+    socket.close()
+    break
