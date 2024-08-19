@@ -1,0 +1,23 @@
+#GPIO12 PWMA -> PWM hardware pin (less overhead on CPU)
+
+#GPIO13 PWMB -> PWM hardware pin (less overhead on CPU)
+
+#GPIO4 STBY -> power saving on/off
+
+#GPIO6 AIN2 -> controls motor spin direction
+
+#GPIO5 AIN1 -> controls motor spin direction
+
+#GPIO26 BIN1 -> controls motor spin direction
+
+#GPIO19 BIN2 -> controls motor spin direction
+
+#GPIO22 -> left encoder sensor
+
+#GPIO27 -> right encoder sensor
+
+#GPIO10 -> led SPI0
+
+#GPIO2 SDA -> 9DoF IMU 
+   
+#GPIO3 SCL -> 9DoF IMU
