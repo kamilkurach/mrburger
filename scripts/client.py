@@ -1,7 +1,7 @@
 import socket
 import keyboard
 
-host = '192.168.5.104'
+host = '192.168.5.107'
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket.connect((host, 8080))
 
