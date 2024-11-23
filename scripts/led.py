@@ -10,13 +10,15 @@ sudo pip3 install rpi_ws281x adafruit-circuitpython-neopixel
 
 sudo python3 -m pip install --force-reinstall adafruit-blinka
 '''
+
 # LED Type: RGB WS2812 SMD
 
 # GPIO10 SPI
 pixel_pin = board.D10
-num_pixels = 2
+num_pixels = 4
 order = neopixel.GRB
 
+# init LEDs
 led = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.95, auto_write=True, pixel_order=order)
 
 # STATUS LED
@@ -29,35 +31,72 @@ PURPLE = (180, 0, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-color_tab = [RED, YELLOW, GREEN, CYAN]
-
 # right & left turn signal (YELLOW)
-for i in range(2):
-  for _ in range(3):
-    led[i] = YELLOW
+def right_turn(pulses):
+  for _ in range(pulses):
+    led[1] = YELLOW
     led.show()
     slow_beep()
     sleep(0.3)
-    led[i] = BLACK
+    led[1] = BLACK
     led.show()
     sleep(0.3)
 
-# stop light (RED)
+right_turn(3)
 
-for _ in range(2):
+def left_turn(pulses):
+  for _ in range(pulses):
+    led[3] = YELLOW
+    led.show()
+    slow_beep()
+    sleep(0.3)
+    led[3] = BLACK
+    led.show()
+    sleep(0.3)
+
+left_turn(3)
+
+# stop light (RED)
+def stop_light(duration):
   led.fill(RED)
   led.show()
   long_beep()
-  sleep(2)
+  sleep(duration)
   led.fill(BLACK)
   led.show()
-  sleep(2)
+  sleep(duration)
 
-# torch light (CYAN) for low light conditions
+stop_light(2)
 
-led.fill(WHITE)
-led.show()
-sleep(3)
-led.fill(BLACK)
-led.show()
+# torch light (WHITE) for low light conditions
+def low_light(duration):
+  led[0] = WHITE
+  led[1] = WHITE
+  led[3] = WHITE
+  led[2] = RED
+  led.show()
+  sleep(duration)
+  led.fill(BLACK)
+  led.show()
 
+low_light(1)
+
+# RED & GREEN
+def port_starboard(duration):
+  led[1] = GREEN
+  led[3] = RED
+  led.show()
+  sleep(duration)
+  led.fill(BLACK)
+  led.show()
+
+port_starboard(1)
+
+def end():
+  led.fill(GREEN)
+  led.show()
+  sleep(1)
+  led.fill(BLACK)
+  led.show()
+
+end()
