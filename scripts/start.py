@@ -14,7 +14,7 @@ sudo python3 -m pip install --force-reinstall adafruit-blinka
 
 # GPIO10 SPI
 pixel_pin = board.D10
-num_pixels = 4
+num_pixels = 8
 order = neopixel.GRB
 
 led = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.95, auto_write=True, pixel_order=order)
@@ -29,13 +29,13 @@ PURPLE = (180, 0, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-color_tab = [CYAN, PURPLE, RED, YELLOW, GREEN, BLUE]
+color_tab = [RED, GREEN, BLUE]
 
 for color in color_tab:
   for i in range(num_pixels):
     led[i] = color
     led.show()
-    sleep(0.05)
+    sleep(0.02)
     led[i] = BLACK
     led.show()
 
