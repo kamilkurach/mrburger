@@ -4,8 +4,8 @@
 
 ## current state
 
-<img src="resources/IMG_20241204_015451.jpg" alt="currentstate" width=30%/>
-<img src="resources/IMG_20241213_023858.jpg" alt="currentstate" width=30%/>
+<!-- <img src="resources/IMG_20241204_015451.jpg" alt="currentstate" width=30%/> -->
+<img src="resources/IMG_20241213_090648.jpg" alt="currentstate" width=30%/>
 
 ## videos: 
 
