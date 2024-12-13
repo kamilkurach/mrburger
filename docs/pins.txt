@@ -12,9 +12,9 @@
 
 #GPIO19 BIN2 -> controls motor spin direction
 
-#GPIO22 -> left encoder sensor
+#GPIO22 -> gpio-shutdown button
 
-#GPIO27 -> right encoder sensor
+#GPIO27 -> 
 
 #GPIO10 -> led SPI0
 
