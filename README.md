@@ -4,7 +4,7 @@
 
 ## current state
 
-<img src="resources/IMG_20241204_015451.jpg" alt="currentstate" width=40%/>
+<img src="resources/IMG_20241213_023858.jpg" alt="currentstate" width=40%/>
 
 ## video: 
 
