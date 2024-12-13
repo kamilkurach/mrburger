@@ -4,8 +4,11 @@
 
 ## current state
 
-<img src="resources/IMG_20241213_023858.jpg" alt="currentstate" width=40%/>
+<img src="resources/IMG_20241204_015451.jpg" alt="currentstate" width=30%/>
+<img src="resources/IMG_20241213_023858.jpg" alt="currentstate" width=30%/>
 
-## video: 
+## videos: 
 
-[![video](resources/IMG_20240803_034906_3.jpg)](https://youtube.com/shorts/dS5dcS42dTs)
+https://youtube.com/shorts/dS5dcS42dTs
+
+https://youtube.com/shorts/08CZh5qDslI
