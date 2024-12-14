@@ -1,7 +1,7 @@
 import socket
 import keyboard
 
-host = '192.168.5.107'
+host = '192.168.8.101'
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket.connect((host, 8080))
 
@@ -31,7 +31,10 @@ while True:
     s_encode = s.encode()
     socket.send(s_encode)
     print('\n')
-  elif keyboard.read_key() == 'c':
-    print('\n')
     socket.close()
     break
+  elif keyboard.read_key() == 'b':
+    s = 'b'
+    s_encode = s.encode()
+    socket.send(s_encode)
+    print('\n')
