@@ -3,6 +3,7 @@ from time import sleep
 import threading
 import sys
 import socket
+from led import right_turn, left_turn, stop_light
 
 GPIO.setmode(GPIO.BCM)
 
@@ -18,23 +19,6 @@ GPIO.output(4, GPIO.HIGH)
 def backwards():
   #GPIO6 AIN2
   GPIO.setup(6, GPIO.OUT)
-  GPIO.output(6, GPIO.LOW)
-
-  #GPIO5 AIN1
-  GPIO.setup(5, GPIO.OUT)
-  GPIO.output(5, GPIO.HIGH)
-
-  #GPIO26 BIN1
-  GPIO.setup(26, GPIO.OUT)
-  GPIO.output(26, GPIO.HIGH)
-
-  #GPIO19 BIN2
-  GPIO.setup(19, GPIO.OUT)
-  GPIO.output(19, GPIO.LOW)
-
-def forward():
-  #GPIO6 AIN2
-  GPIO.setup(6, GPIO.OUT)
   GPIO.output(6, GPIO.HIGH)
 
   #GPIO5 AIN1
@@ -48,6 +32,23 @@ def forward():
   #GPIO19 BIN2
   GPIO.setup(19, GPIO.OUT)
   GPIO.output(19, GPIO.HIGH)
+
+def forward():
+  #GPIO6 AIN2
+  GPIO.setup(6, GPIO.OUT)
+  GPIO.output(6, GPIO.LOW)
+
+  #GPIO5 AIN1
+  GPIO.setup(5, GPIO.OUT)
+  GPIO.output(5, GPIO.HIGH)
+
+  #GPIO26 BIN1
+  GPIO.setup(26, GPIO.OUT)
+  GPIO.output(26, GPIO.HIGH)
+
+  #GPIO19 BIN2
+  GPIO.setup(19, GPIO.OUT)
+  GPIO.output(19, GPIO.LOW)
 
 def turn_left():
   #GPIO6 AIN2
@@ -82,6 +83,23 @@ def turn_right():
   #GPIO19 BIN2
   GPIO.setup(19, GPIO.OUT)
   GPIO.output(19, GPIO.HIGH)
+
+def soft_stop():
+  #GPIO6 AIN2
+  GPIO.setup(6, GPIO.OUT)
+  GPIO.output(6, GPIO.LOW)
+
+  #GPIO5 AIN1
+  GPIO.setup(5, GPIO.OUT)
+  GPIO.output(5, GPIO.LOW)
+
+  #GPIO26 BIN1
+  GPIO.setup(26, GPIO.OUT)
+  GPIO.output(26, GPIO.LOW)
+
+  #GPIO19 BIN2
+  GPIO.setup(19, GPIO.OUT)
+  GPIO.output(19, GPIO.LOW)
 
 
 #left sensor
@@ -134,7 +152,7 @@ t = threading.Thread(target=count_ticks, args=(gpio,))
 t.start()
 '''
 
-host = '192.168.5.104'
+host = '192.168.8.101'
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket.bind((host, 8080))
 socket.listen(1)
@@ -145,27 +163,46 @@ while True:
   if len(buffer) > 0:
     if str(buffer.decode()) == 'w':
       print(buffer)
+      soft_stop()
+      pwm_a.ChangeDutyCycle(0)
+      pwm_b.ChangeDutyCycle(0)
+      sleep(0.5)
       forward()
       pwm_a.ChangeDutyCycle(55)
       pwm_b.ChangeDutyCycle(55)
     elif str(buffer.decode()) == 's':
       print(buffer)
+      soft_stop()
+      pwm_a.ChangeDutyCycle(0)
+      pwm_b.ChangeDutyCycle(0)
+      sleep(0.5)
       backwards()
       pwm_a.ChangeDutyCycle(55)
       pwm_b.ChangeDutyCycle(55)
     elif str(buffer.decode()) == 'a':
       print(buffer)
-      turn_left()
-      pwm_a.ChangeDutyCycle(50)
-      pwm_b.ChangeDutyCycle(50)
+      forward()
+      right_turn(2)
+      pwm_a.ChangeDutyCycle(65)
+      pwm_b.ChangeDutyCycle(45)
     elif str(buffer.decode()) == 'd':
       print(buffer)
-      turn_right()
-      pwm_a.ChangeDutyCycle(50)
-      pwm_b.ChangeDutyCycle(50)
+      forward()
+      left_turn(2)
+      pwm_a.ChangeDutyCycle(45)
+      pwm_b.ChangeDutyCycle(65)
+    elif str(buffer.decode()) == 'b':
+      print(buffer)
+      soft_stop()
+      pwm_a.ChangeDutyCycle(0)
+      pwm_b.ChangeDutyCycle(0)
+      stop_light(1)
     elif str(buffer.decode()) == 'q':
       print(buffer)
+      soft_stop()
       pwm_a.stop()
       pwm_b.stop()
       connection.close()
+      #init STBY
+      GPIO.output(4, GPIO.LOW)
       break
