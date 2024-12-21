@@ -10,20 +10,29 @@ import numpy as np
 min = np.array([110, 50, 50])
 max = np.array([130, 255, 255])
 
-cam = cv2.VideoCapture(1)
+#cam = cv2.VideoCapture(1)
+cam = cv2.VideoCapture('test_drive_3.h264')
 
 while True:
   ret, frame = cam.read()
   hsv_img = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
   mask = cv2.inRange(hsv_img, min, max)
+   
+  gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+  
+  blurred = cv2.GaussianBlur(src=gray, ksize=(3, 5), sigmaX=0.6) 
+      
+  edges = cv2.Canny(blurred, 80, 130)
 
   if not ret:
     break
 
   cv2.imshow("camera", frame)
+  cv2.imshow("edges", edges)
   cv2.imshow("mask", mask)
   result = cv2.bitwise_and(frame, frame, mask=mask) 
   cv2.imshow("result", result)
+  
 
   if cv2.waitKey(1) == ord('q'):
     break
