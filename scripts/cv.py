@@ -20,7 +20,7 @@ while True:
    
   gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
   
-  blurred = cv2.GaussianBlur(src=gray, ksize=(3, 5), sigmaX=0.6) 
+  blurred = cv2.GaussianBlur(src=gray, ksize=(3, 5), sigmaX=0.6)
       
   edges = cv2.Canny(blurred, 80, 130)
 
@@ -32,8 +32,10 @@ while True:
   cv2.imshow("mask", mask)
   result = cv2.bitwise_and(frame, frame, mask=mask) 
   cv2.imshow("result", result)
+  white_pix = np.sum(result == 255) 
+  black_pix = np.sum(result == 0) 
   
-
+  print(white_pix, black_pix)
   if cv2.waitKey(1) == ord('q'):
     break
 

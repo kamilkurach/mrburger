@@ -1,16 +1,17 @@
 import RPi.GPIO as GPIO
+import pigpio
 from time import sleep
 import threading
 import sys
 import socket
-from led import right_turn, left_turn, stop_light
+from led import right_turn, left_turn, stop_light, forward_light_on, forward_light_off
 
 GPIO.setmode(GPIO.BCM)
 
 #GPIO12 PWMA
-GPIO.setup(12, GPIO.OUT)
+#GPIO.setup(12, GPIO.OUT)
 #GPIO13 PWMB
-GPIO.setup(13, GPIO.OUT)
+#GPIO.setup(13, GPIO.OUT)
 
 #GPIO4 STBY
 GPIO.setup(4, GPIO.OUT)
@@ -108,11 +109,15 @@ GPIO.setup(22, GPIO.IN)
 GPIO.setup(27, GPIO.IN)
 
 #set gpio25 to 50Hz
-pwm_a = GPIO.PWM(12, 50)
-pwm_b = GPIO.PWM(13, 50)
+#pwm_a = GPIO.PWM(12, 50)
+#pwm_b = GPIO.PWM(13, 50)
 
-pwm_a.start(0)
-pwm_b.start(0)
+PI = pigpio.pi()
+#PI.hardware_PWM(12, 50000, 400000)
+#PI.hardware_PWM(13, 50000, 400000)
+
+#pwm_a.start(0)
+#pwm_b.start(0)
 
 #set global vars initial values
 PREV_TICK = GPIO.input(22)
@@ -145,63 +150,83 @@ def print_sensor_data():
   right_encoder = GPIO.input(27)
   print("L: ", left_encoder, "R: ", right_encoder)
 
-
-#count ticks from sensor in separate thread
-gpio = 22
-t = threading.Thread(target=count_ticks, args=(gpio,))
-t.start()
 '''
+#t_r = threading.Thread(target=right_turn, args=(3,))
+#t.start()
+#t_l = threading.Thread(target=left_turn, args=(3,))
 
-host = '192.168.8.101'
+host = '192.168.5.111'
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket.bind((host, 8080))
 socket.listen(1)
 connection, address = socket.accept()
+
+current_state = None
+
+forward_light_on()
 
 while True:
   buffer = connection.recv(1024)
   if len(buffer) > 0:
     if str(buffer.decode()) == 'w':
       print(buffer)
-      soft_stop()
-      pwm_a.ChangeDutyCycle(0)
-      pwm_b.ChangeDutyCycle(0)
-      sleep(0.5)
+      #soft_stop()
+      #pwm_a.ChangeDutyCycle(0)
+      #pwm_b.ChangeDutyCycle(0)
+      #sleep(0.1)
       forward()
-      pwm_a.ChangeDutyCycle(55)
-      pwm_b.ChangeDutyCycle(55)
+      PI.hardware_PWM(12, 50000, 400000)
+      PI.hardware_PWM(13, 50000, 400000)
+      #pwm_a.ChangeDutyCycle(40)
+      #pwm_b.ChangeDutyCycle(40)
+    elif str(buffer.decode()) == 'x':
+      forward()
+      PI.hardware_PWM(12, 50000, 650000)
+      PI.hardware_PWM(13, 50000, 650000)
     elif str(buffer.decode()) == 's':
       print(buffer)
       soft_stop()
-      pwm_a.ChangeDutyCycle(0)
-      pwm_b.ChangeDutyCycle(0)
-      sleep(0.5)
+      #pwm_a.ChangeDutyCycle(0)
+      #pwm_b.ChangeDutyCycle(0)
+      PI.hardware_PWM(12, 50000, 0)
+      PI.hardware_PWM(13, 50000, 0)
+      sleep(0.2)
       backwards()
-      pwm_a.ChangeDutyCycle(55)
-      pwm_b.ChangeDutyCycle(55)
+      PI.hardware_PWM(12, 50000, 400000)
+      PI.hardware_PWM(13, 50000, 400000)
     elif str(buffer.decode()) == 'a':
       print(buffer)
       forward()
-      right_turn(2)
-      pwm_a.ChangeDutyCycle(65)
-      pwm_b.ChangeDutyCycle(45)
+      #right_turn(1)
+      #if t_r.is_alive() == False:
+      #  t_r.start()
+      #  t_r.join()
+      PI.hardware_PWM(12, 50000, 550000)
+      PI.hardware_PWM(13, 50000, 350000)
     elif str(buffer.decode()) == 'd':
       print(buffer)
       forward()
-      left_turn(2)
-      pwm_a.ChangeDutyCycle(45)
-      pwm_b.ChangeDutyCycle(65)
+      #left_turn(1)
+      #if t_l.is_alive() == False:
+      #  t_l.start()
+      #  t_l.join()
+      PI.hardware_PWM(12, 50000, 350000)
+      PI.hardware_PWM(13, 50000, 550000)
     elif str(buffer.decode()) == 'b':
       print(buffer)
       soft_stop()
-      pwm_a.ChangeDutyCycle(0)
-      pwm_b.ChangeDutyCycle(0)
+      PI.hardware_PWM(12, 50000, 0)
+      PI.hardware_PWM(13, 50000, 0)
       stop_light(1)
+      forward_light_on()
     elif str(buffer.decode()) == 'q':
       print(buffer)
       soft_stop()
-      pwm_a.stop()
-      pwm_b.stop()
+      #pwm_a.stop()
+      #pwm_b.stop()
+      PI.hardware_PWM(12, 50000, 0)
+      PI.hardware_PWM(13, 50000, 0)
+      forward_light_off()
       connection.close()
       #init STBY
       GPIO.output(4, GPIO.LOW)

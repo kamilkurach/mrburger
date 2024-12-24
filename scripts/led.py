@@ -37,40 +37,39 @@ def right_turn(pulses):
     led[0] = YELLOW
     led[1] = YELLOW
     led.show()
-    slow_beep()
+    #slow_beep()
     sleep(0.3)
     led[0] = BLACK
     led[1] = BLACK
     led.show()
     sleep(0.3)
 
-right_turn(3)
+#right_turn(3)
 
 def left_turn(pulses):
   for _ in range(pulses):
     led[4] = YELLOW
     led[5] = YELLOW
     led.show()
-    slow_beep()
+    #slow_beep()
     sleep(0.3)
     led[4] = BLACK
     led[5] = BLACK
     led.show()
     sleep(0.3)
 
-left_turn(3)
+#left_turn(3)
 
 # stop light (RED)
 def stop_light(duration):
   led.fill(RED)
   led.show()
-  long_beep()
+  #long_beep()
   sleep(duration)
   led.fill(BLACK)
   led.show()
-  sleep(duration)
 
-stop_light(2)
+#stop_light(2)
 
 # torch light (WHITE) for low light conditions
 def low_light(duration):
@@ -87,7 +86,7 @@ def low_light(duration):
   led.fill(BLACK)
   led.show()
 
-low_light(1)
+#low_light(1)
 
 # RED & GREEN
 def port_starboard(duration):
@@ -102,7 +101,23 @@ def port_starboard(duration):
   led.fill(BLACK)
   led.show()
 
-port_starboard(1)
+#port_starboard(1)
+
+def forward_light_on():
+  led[3] = RED
+  led[6] = WHITE
+  #led[7] = WHITE
+  led.show()
+
+forward_light_on()
+
+def forward_light_off():
+  led[3] = BLACK
+  led[6] = BLACK
+  #led[7] = BLACK
+  led.show()
+
+forward_light_off()
 
 def end():
   led.fill(GREEN)
@@ -111,4 +126,4 @@ def end():
   led.fill(BLACK)
   led.show()
 
-end()
+#end()
