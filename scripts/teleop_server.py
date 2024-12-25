@@ -51,7 +51,7 @@ def forward():
   GPIO.setup(19, GPIO.OUT)
   GPIO.output(19, GPIO.LOW)
 
-def turn_left():
+def turn_right():
   #GPIO6 AIN2
   GPIO.setup(6, GPIO.OUT)
   GPIO.output(6, GPIO.HIGH)
@@ -68,7 +68,7 @@ def turn_left():
   GPIO.setup(19, GPIO.OUT)
   GPIO.output(19, GPIO.LOW)
 
-def turn_right():
+def turn_left():
   #GPIO6 AIN2
   GPIO.setup(6, GPIO.OUT)
   GPIO.output(6, GPIO.LOW)
@@ -194,6 +194,20 @@ while True:
       backwards()
       PI.hardware_PWM(12, 50000, 400000)
       PI.hardware_PWM(13, 50000, 400000)
+    elif str(buffer.decode()) == 'l':
+      print(buffer)
+      soft_stop()
+      sleep(0.2)
+      # rotate in place 
+      turn_left()
+      #if t_r.is_alive() == False:
+      #  t_r.start()
+      #  t_r.join()
+      PI.hardware_PWM(12, 50000, 400000)
+      PI.hardware_PWM(13, 50000, 400000)
+      sleep(1.8)
+      PI.hardware_PWM(12, 50000, 0)
+      PI.hardware_PWM(13, 50000, 0)
     elif str(buffer.decode()) == 'a':
       print(buffer)
       forward()
@@ -203,6 +217,20 @@ while True:
       #  t_r.join()
       PI.hardware_PWM(12, 50000, 550000)
       PI.hardware_PWM(13, 50000, 350000)
+    elif str(buffer.decode()) == 'r':
+      print(buffer)
+      soft_stop()
+      sleep(0.2)
+      # rotate in place 
+      turn_right()
+      #if t_r.is_alive() == False:
+      #  t_r.start()
+      #  t_r.join()
+      PI.hardware_PWM(12, 50000, 400000)
+      PI.hardware_PWM(13, 50000, 400000)
+      sleep(1.8)
+      PI.hardware_PWM(12, 50000, 0)
+      PI.hardware_PWM(13, 50000, 0)
     elif str(buffer.decode()) == 'd':
       print(buffer)
       forward()
